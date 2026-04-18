@@ -1,4 +1,4 @@
-# Sentinel
+# SentinelAudit
 ### AI-Powered Network Security Audit SaaS for Indian SMEs
 
 > Automatically scan a business network and generate a professional security audit report
