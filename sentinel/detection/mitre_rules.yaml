@@ -1,0 +1,185 @@
+- id: T1021
+  name: Lateral Movement (SMB)
+  confidence: 0.8
+  reason: Connection to SMB port (445)
+  match:
+    all:
+      - field: dst_port
+        op: eq
+        value: 445
+
+- id: T1021-002
+  name: Lateral Movement (RDP)
+  confidence: 0.8
+  reason: Connection to RDP port (3389)
+  match:
+    all:
+      - field: dst_port
+        op: eq
+        value: 3389
+
+- id: T1021-003
+  name: Lateral Movement (WinRM)
+  confidence: 0.8
+  reason: Connection to WinRM port (5985)
+  match:
+    all:
+      - field: dst_port
+        op: eq
+        value: 5985
+
+- id: T1021-004
+  name: Lateral Movement (SSH)
+  confidence: 0.8
+  reason: Connection to SSH port (22)
+  match:
+    all:
+      - field: dst_port
+        op: eq
+        value: 22
+
+- id: T1059
+  name: Command and Scripting Interpreter
+  confidence: 0.7
+  reason: Suspicious command execution detected
+  match:
+    all:
+      - field: process_name
+        op: in
+        value: ["cmd.exe", "powershell.exe", "bash", "sh"]
+
+- id: T1566
+  name: Phishing
+  confidence: 0.6
+  reason: Suspicious email or web traffic detected
+  match:
+    all:
+      - field: protocol
+        op: in
+        value: ["SMTP", "IMAP", "POP3", "HTTP"]
+      - field: suspicious_content
+        op: eq
+        value: true
+
+- id: T1210
+  name: Exploitation of Remote Services
+  confidence: 0.75
+  reason: Unusual connection to remote service port
+  match:
+    all:
+      - field: dst_port
+        op: in
+        value: [3389, 22, 5985]
+      - field: anomaly_score
+        op: gt
+        value: 0.7
+
+- id: T1499
+  name: Endpoint Denial of Service
+  confidence: 0.7
+  reason: High rate of connection attempts or traffic spikes
+  match:
+    all:
+      - field: packet_count
+        op: gt
+        value: 10000
+      - field: anomaly_score
+        op: gt
+        value: 0.8
+
+- id: T1040
+  name: Network Sniffing
+  confidence: 0.6
+  reason: Detection of promiscuous mode or packet capture activity
+  match:
+    all:
+      - field: suspicious_sniffer
+        op: eq
+        value: true
+
+- id: T1133
+  name: External Remote Services
+  confidence: 0.7
+  reason: Unusual remote access detected (VPN, RDP, SSH)
+  match:
+    all:
+      - field: protocol
+        op: in
+        value: ["VPN", "RDP", "SSH"]
+      - field: anomaly_score
+        op: gt
+        value: 0.7
+
+- id: T1105
+  name: Ingress Tool Transfer
+  confidence: 0.8
+  reason: Large file transfer detected to internal host
+  match:
+    all:
+      - field: byte_count
+        op: gt
+        value: 10000000
+      - field: direction
+        op: eq
+        value: inbound
+
+- id: T1567
+  name: Exfiltration Over Web Service
+  confidence: 0.8
+  reason: Large outbound transfer to web service
+  match:
+    all:
+      - field: protocol
+        op: in
+        value: ["HTTP", "HTTPS"]
+      - field: byte_count
+        op: gt
+        value: 10000000
+      - field: direction
+        op: eq
+        value: outbound
+
+- id: T1041
+  name: Exfiltration Over C2 Channel
+  confidence: 0.8
+  reason: Large outbound transfer to suspicious host
+  match:
+    all:
+      - field: protocol
+        op: in
+        value: ["TCP", "UDP"]
+      - field: byte_count
+        op: gt
+        value: 10000000
+      - field: direction
+        op: eq
+        value: outbound
+      - field: dst_port
+        op: gt
+        value: 1024
+
+- id: T1071
+  name: Application Layer Protocol: Web Protocols
+  confidence: 0.7
+  reason: Unusual HTTP/HTTPS traffic pattern detected
+  match:
+    all:
+      - field: protocol
+        op: in
+        value: ["HTTP", "HTTPS"]
+      - field: anomaly_type
+        op: eq
+        value: pattern
+
+- id: T1190
+  name: Exploit Public-Facing Application
+  confidence: 0.7
+  reason: TCP flow to high-numbered port
+  match:
+    all:
+      - field: protocol
+        op: eq
+        value: TCP
+      - field: dst_port
+        op: gt
+        value: 1024

@@ -1,0 +1,15 @@
+# Placeholder for Customer Pydantic schema
+from pydantic import BaseModel
+
+class CustomerBase(BaseModel):
+    name: str
+    email: str
+
+class CustomerCreate(CustomerBase):
+    password: str
+
+class CustomerOut(CustomerBase):
+    id: int
+
+    class Config:
+        orm_mode = True

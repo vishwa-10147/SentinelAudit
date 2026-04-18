@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Security Audit Report</title>
+                '#c0392b' if device.risk_level == 'Critical' else
+        body { font-family: Arial, sans-serif; margin: 2em; background: #fff; }
+        h1, h2 { color: #2c3e50; }
+        .header { background: #223a5e; color: #fff; padding: 1em; border-radius: 8px; }
+        .risk-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; font-weight: bold; margin: 1em auto; }
+        .risk-critical { background: #c0392b; color: #fff; }
+        .risk-high { background: #e67e22; color: #fff; }
+        .risk-medium { background: #f1c40f; color: #fff; }
+        .risk-low { background: #27ae60; color: #fff; }
+        .stat-grid { display: flex; gap: 2em; margin: 2em 0; }
+        .stat-box { background: #f7f7fa; padding: 1em; border-radius: 8px; flex: 1; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 2em 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #223a5e; color: #fff; }
+        .pill { display: inline-block; padding: 0.2em 0.8em; border-radius: 12px; font-size: 0.9em; }
+        .critical { background: #c0392b; color: #fff; }
+        .high { background: #e67e22; color: #fff; }
+        .medium { background: #f1c40f; color: #fff; }
+        .low { background: #27ae60; color: #fff; }
+        .device-bar { height: 18px; border-radius: 8px; background: #eee; margin: 0.5em 0; }
+        .device-bar-inner { height: 100%; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Sentinel Security Audit Report</h1>
+        <h2>{{ company_name }}</h2>
+    </div>
+    <div class="risk-circle risk-{{ risk_level|lower }}">{{ overall_risk_score }}</div>
+    <div class="stat-grid">
+        <div class="stat-box">
+            <div style="font-size:2em;">{{ device_count }}</div>
+            <div>Devices</div>
+        </div>
+        <div class="stat-box">
+            <div style="font-size:2em;">{{ critical_count }}</div>
+            <div>Critical Alerts</div>
+        </div>
+        <div class="stat-box">
+            <div style="font-size:2em;">{{ high_count }}</div>
+            <div>High Alerts</div>
+        </div>
+        <div class="stat-box">
+            <div style="font-size:2em;">{{ medium_count }}</div>
+            <div>Medium Alerts</div>
+        </div>
+    </div>
+    <h2>Top 5 Threats</h2>
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>Device</th>
+            <th>Severity</th>
+            <th>MITRE ID</th>
+            <th>Technique</th>
+            <th>Reason</th>
+        </tr>
+        {% for alert in top_threats %}
+        <tr>
+            <td>{{ alert.time }}</td>
+            <td>{{ alert.device }}</td>
+            <td><span class="pill {{ alert.severity|lower }}">{{ alert.severity }}</span></td>
+            <td>{{ alert.mitre_id }}</td>
+            <td>{{ alert.technique }}</td>
+            <td>{{ alert.reason }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Device Risk Leaderboard</h2>
+    <table>
+        <tr><th>Device</th><th>Risk Score</th><th>Risk</th></tr>
+        {% for device in top_devices %}
+        <tr>
+            <td>{{ device.name }}</td>
+            <td>
+                <div class="device-bar">
+                    {% set style_str = 'width:' ~ device.risk_score ~ '%; background:' ~ (
+                        '#c0392b' if device.risk_level == 'Critical' else
+                        '#e67e22' if device.risk_level == 'High' else
+                        '#f1c40f' if device.risk_level == 'Medium' else
+                        '#27ae60') %}
+                    <div class="device-bar-inner risk-{{ device.risk_level|lower }}" style="{{ style_str }}"></div>
+                </div>
+            </td>
+            <td>{{ device.risk_score }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Recommendations</h2>
+    <ol>
+        {% for rec in recommendations %}
+        <li>{{ rec }}</li>
+        {% endfor %}
+    </ol>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7fa; }
+        h1 { color: #2c3e50; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #2c3e50; color: #fff; }
+        tr:nth-child(even) { background: #f2f2f2; }
+        .high { color: #c0392b; font-weight: bold; }
+        .filter-form { margin-bottom: 2em; background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 2px 8px #eee; }
+        .filter-form label { margin-right: 1em; }
+        .filter-form input { margin-right: 1em; }
+    </style>
+</head>
+<body>
+    <h1>Sentinel Threat Detections</h1>
+    <form class="filter-form" method="get">
+        <label>Source IP: <input type="text" name="src_ip" value="{{ src_ip }}"></label>
+        <label>Destination IP: <input type="text" name="dst_ip" value="{{ dst_ip }}"></label>
+        <label>Protocol: <input type="text" name="protocol" value="{{ protocol }}"></label>
+        <label>MITRE ID: <input type="text" name="mitre_id" value="{{ mitre_id }}"></label>
+        <label>Date from: <input type="date" name="date_from" value="{{ date_from }}"></label>
+        <label>Date to: <input type="date" name="date_to" value="{{ date_to }}"></label>
+        <button type="submit">Filter</button>
+        <a href="/">Reset</a>
+        {% if g.user and g.user.role == 'admin' %}
+        <a href="/export?src_ip={{ src_ip }}&dst_ip={{ dst_ip }}&protocol={{ protocol }}&mitre_id={{ mitre_id }}&date_from={{ date_from }}&date_to={{ date_to }}" style="margin-left:2em;">Export CSV</a>
+        {% endif %}
+    </form>
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>Source IP</th>
+            <th>Destination IP</th>
+            <th>Protocol</th>
+            <th>MITRE ID</th>
+            <th>Technique</th>
+            <th>Confidence</th>
+            <th>Risk</th>
+            <th>Reason</th>
+        </tr>
+        {% for d in detections %}
+        <tr>
+            <td>{{ d.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ d.src_ip }}</td>
+            <td>{{ d.dst_ip }}</td>
+            <td>{{ d.protocol }}</td>
+            <td>{{ d.mitre_id }}</td>
+            <td>{{ d.mitre_name }}</td>
+            <td class="{% if d.confidence >= 0.8 %}high{% endif %}">{{ '%.2f' % d.confidence }}</td>
+            <td>{{ d.risk_score }}</td>
+            <td>{{ d.reason }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

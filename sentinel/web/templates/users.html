@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management - Sentinel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7fa; }
+        h2 { color: #2c3e50; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #2c3e50; color: #fff; }
+        tr:nth-child(even) { background: #f2f2f2; }
+        .add-btn { margin: 1em 0; display: inline-block; background: #2c3e50; color: #fff; padding: 8px 16px; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h2>User Management</h2>
+    <a class="add-btn" href="/users/add">Add User</a>
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                {% if user.username != 'admin' %}
+                <form action="/users/delete/{{ user.id }}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Delete user {{ user.username }}?');">Delete</button>
+                </form>
+                {% endif %}

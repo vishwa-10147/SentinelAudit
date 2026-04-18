@@ -1,0 +1,3 @@
+# Placeholder for agent config (API key, endpoint)
+api_key: "YOUR_API_KEY"
+endpoint: "https://api.sentinel.com/upload"

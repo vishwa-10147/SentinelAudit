@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Sentinel Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7fa; }
+        .login-box { background: #fff; padding: 2em; max-width: 400px; margin: 5em auto; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h2 { color: #2c3e50; }
+        input[type=text], input[type=password] { width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box; }
+        button { background: #2c3e50; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .error { color: #c0392b; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Sentinel Login</h2>
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        <form method="post">
+            <label>Username</label>
+            <input type="text" name="username" required>
+            <label>Password</label>
+            <input type="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>
