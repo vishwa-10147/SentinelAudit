@@ -124,131 +124,7 @@ Repeat every 30 days automatically
 
 ```
 sentinel/
-├── backend/
-│   ├── app/
-│   │   ├── main.py                    # FastAPI app entry point
-│   │   ├── api/
-│   │   │   ├── __init__.py
-│   │   │   ├── reports.py             # Report CRUD + download
-│   │   │   ├── scans.py               # Scan upload + processing
-│   │   │   ├── payments.py            # Razorpay integration
-│   │   │   ├── auth.py                # Login, register, JWT
-│   │   │   └── customers.py           # Customer management
-│   │   ├── core/
-│   │   │   ├── config.py              # Settings via pydantic-settings
-│   │   │   ├── database.py            # SQLAlchemy engine + session
-│   │   │   ├── security.py            # JWT helpers, password hashing
-│   │   │   └── deps.py                # FastAPI dependencies
-│   │   ├── models/
-│   │   │   ├── customer.py            # Customer table
-│   │   │   ├── report.py              # Report table
-│   │   │   └── scan.py                # Scan job table
-│   │   ├── schemas/
-│   │   │   ├── customer.py            # Pydantic request/response schemas
-│   │   │   ├── report.py
-│   │   │   └── scan.py
-│   │   ├── services/
-│   │   │   ├── report_generator.py    # Core: scan data → PDF bytes
 │   │   │   ├── email_service.py       # Send report PDF via email
-│   │   │   └── scan_processor.py      # Validate + parse uploaded data
-│   │   └── templates/
-│   │       ├── report.html            # Jinja2 PDF report template
-│   │       └── report.css             # PDF styling
-│   │
-│   ├── detection/                     # Network detection engine
-│   │   ├── __init__.py
-│   │   ├── sniffer.py                 # Packet capture (Scapy)
-│   │   ├── flow_table.py              # Flow tracking + timeout
-│   │   ├── feature_extractor.py       # 24 statistical features per flow
-│   │   ├── anomaly_engine.py          # Z-score + Isolation Forest
-│   │   ├── behavioral_fingerprint.py  # Per-device baseline + drift
-│   │   ├── risk_engine.py             # Unified risk scoring
-│   │   ├── mitre_mapper.py            # Map threats to ATT&CK
-│   │   └── alert_logger.py            # Write alerts.json
-│   │
-│   ├── agent/
-│   │   ├── sentinel_agent.py          # Agent customers install + run
-│   │   └── agent_config.yaml          # Agent config (API key, endpoint)
-│   │
-│   ├── tasks/
-│   │   └── celery_tasks.py            # Background: generate report async
-│   │
-│   ├── tests/
-│   │   ├── test_detection.py
-│   │   ├── test_reports.py
-│   │   └── fixtures/
-│   │       ├── sample_alerts.json
-│   │       ├── sample_device_profiles.json
-│   │       └── sample_risk_timeline.json
-│   │
-│   ├── requirements.txt
-│   ├── Dockerfile
-│   ├── celeryconfig.py
-│   └── .env.example
-│
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Landing.jsx            # Marketing homepage
-│   │   │   ├── Login.jsx              # Auth page
-│   │   │   ├── Register.jsx
-│   │   │   ├── Dashboard.jsx          # Customer home
-│   │   │   ├── Reports.jsx            # Report history list
-│   │   │   ├── ReportDetail.jsx       # Single report view
-│   │   │   └── Payment.jsx            # Checkout + Razorpay
-│   │   ├── components/
-│   │   │   ├── ui/                    # shadcn/ui components
-│   │   │   ├── ReportCard.jsx         # Report preview card
-│   │   │   ├── RiskScoreCircle.jsx    # Animated risk score
-│   │   │   ├── ThreatTable.jsx        # Threats with MITRE tags
-│   │   │   ├── DeviceRiskBar.jsx      # Device risk progress bar
-│   │   │   └── Navbar.jsx
-│   │   ├── hooks/
-│   │   │   ├── useAuth.js
-│   │   │   └── useReports.js
-│   │   ├── lib/
-│   │   │   ├── api.js                 # Axios instance + interceptors
-│   │   │   └── utils.js
-│   │   └── App.jsx
-│   ├── public/
-│   ├── index.html
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.js
-│
-├── docker-compose.yml
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-└── README.md
-```
-
----
-
-## Roadmap — Build Order
-
-> Rule: finish each phase completely before starting the next.
-> Each phase = one focused build session.
-
----
-
-### Phase 0 — Validate First (Week 1, No Code)
-
-**Goal: Prove a real person will pay before writing a single line.**
-
-This is the most important phase. Do not skip it.
-
-- [ ] Write a sample audit report manually in Google Docs
-  - Pretend you scanned a company network
-  - Include: risk score, 5 fake threats, device list, recommendations
-  - Make it look professional — this is your sales tool
-- [ ] Post on LinkedIn: "I'm building a tool that auto-generates network
-      security audit reports for SMEs. Looking for 3 businesses in
-      Hyderabad to get a free report. Comment or DM me."
-- [ ] Send direct messages to 20 people:
-  - Search: "IT Manager Hyderabad", "CTO Hyderabad", "Operations Head"
-  - Target: pharma, manufacturing, clinics, CA firms, logistics
-  - Message template (see Customer Acquisition section below)
 - [ ] Get 1 person to agree to a free trial
 - [ ] Visit them, interview them for 20 minutes:
   - "How do you currently handle network security?"
@@ -304,12 +180,51 @@ Build `detection/feature_extractor.py`:
   - `unique_dst_ports` (from same src in last 60s)
   - `dns_query_count` (per device per minute)
   - `is_internal_src`, `is_internal_dst`
+# SentinelAudit
+
+SentinelAudit is an AI-powered network security audit platform designed for small and medium businesses. It provides automated network scanning, threat detection, risk scoring, and professional PDF security reports—no security team required.
+
+## Features
+- Lightweight Python agent for network traffic capture
+- Machine learning-based anomaly and threat detection
+- MITRE ATT&CK mapping for detected threats
+- Per-device risk scoring
+- Automated PDF report generation
+- Web dashboard for audit logs and user management
+- Modular, extensible backend (FastAPI)
+
+## Tech Stack
+- **Backend:** Python 3.11+, FastAPI, SQLAlchemy, Celery, SQLite/Postgres
+- **Detection Engine:** Scapy, Pandas, NumPy, scikit-learn, PyYAML
+- **Frontend:** React (planned), Vite, Tailwind CSS
+- **PDF Reports:** Jinja2, WeasyPrint
+
+## Repository Structure
+```
   - `hour_of_day`, `day_of_week`
   - `tcp_flag_ratio`, `payload_ratio`
 
 #### Step 4 — Anomaly detection (2 hours)
 
 Build `detection/anomaly_engine.py`:
+```
+
+## Getting Started
+1. Clone the repository
+2. Set up a Python 3.11+ virtual environment
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run the backend: `uvicorn backend.app.main:app --reload`
+5. (Optional) Start the agent and detection engine
+
+## Contributing
+Contributions are welcome! Please open issues or submit pull requests for improvements.
+
+## License
+This project is licensed under the MIT License.
+
+---
+
+*For detailed technical phases, roadmap, and internal planning, see TASK.md.*
 - `AnomalyEngine` class
 - Warmup: collect 50 flows to build baseline
 - Z-score detection: flag features > 3 standard deviations from mean
