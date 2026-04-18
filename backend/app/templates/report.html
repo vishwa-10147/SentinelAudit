@@ -84,6 +84,7 @@
                         '#e67e22' if device.risk_level == 'High' else
                         '#f1c40f' if device.risk_level == 'Medium' else
                         '#27ae60') %}
+                    {# The following style uses Jinja2 variables and may confuse static CSS linters. Safe for WeasyPrint and browsers. #}
                     <div class="device-bar-inner risk-{{ device.risk_level|lower }}" style="{{ style_str }}"></div>
                 </div>
             </td>
